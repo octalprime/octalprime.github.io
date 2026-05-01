@@ -300,10 +300,10 @@
       aEl.textContent = '';
 
       try {
-        const res = await fetch('https://api.quotable.io/random', { cache: 'no-store' });
+        const res = await fetch('https://dummyjson.com/quotes/random', { cache: 'no-store' });
         if (!res.ok) throw new Error();
         const data = await res.json();
-        qEl.textContent = `"${data.content}"`;
+        qEl.textContent = `"${data.quote}"`;
         aEl.textContent = data.author;
       } catch {
         const q = fallback[Math.floor(Math.random() * fallback.length)];
