@@ -1,7 +1,318 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OctalPrime</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green:   #00ff41;
+      --green2:  #00cc33;
+      --green3:  #007a1e;
+      --dim:     #004d14;
+      --bg:      #060a06;
+      --surface: #0d150d;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--green);
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    /* pixel grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,255,65,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,65,.04) 1px, transparent 1px);
+      background-size: 16px 16px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,.18) 3px,
+        rgba(0,0,0,.18) 4px
+      );
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      width: min(680px, 92vw);
+      background: var(--surface);
+      border: 4px solid var(--green);
+      /* pixel shadow */
+      box-shadow:
+        8px  8px 0 var(--green3),
+        0 0 40px rgba(0,255,65,.15),
+        inset 0 0 60px rgba(0,255,65,.04);
+      padding: 36px 32px 32px;
+    }
+
+    /* pixel corner studs */
+    .screen::before,
+    .screen::after,
+    .stud-bl::before,
+    .stud-br::before {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      background: var(--green);
+    }
+    .screen::before  { top: -4px;  left: -4px; }
+    .screen::after   { top: -4px;  right: -4px; }
+    .stud-bl::before { bottom: -4px; left: -4px; }
+    .stud-br::before { bottom: -4px; right: -4px; }
+
+    /* header bar */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--dim);
+    }
+
+    .header-dots {
+      display: flex; gap: 6px;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      background: var(--green3);
+      box-shadow: inset -2px -2px 0 rgba(0,0,0,.4);
+    }
+    .dot.active { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 7px;
+      color: var(--green3);
+      letter-spacing: 3px;
+    }
+
+    /* logo */
+    .logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-text {
+      font-size: clamp(10px, 3vw, 16px);
+      letter-spacing: 6px;
+      color: var(--green);
+      text-shadow: 0 0 16px var(--green), 0 0 40px rgba(0,255,65,.4);
+      animation: flicker 8s infinite;
+    }
+    .logo-sub {
+      font-size: 7px;
+      color: var(--green3);
+      letter-spacing: 3px;
+      margin-top: 8px;
+    }
+
+    @keyframes flicker {
+      0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
+      20%,24%,55% { opacity: .6; }
+    }
+
+    /* divider */
+    .divider {
+      font-size: 8px;
+      color: var(--dim);
+      text-align: center;
+      letter-spacing: 2px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    /* quote card */
+    .quote-card {
+      background: rgba(0,255,65,.03);
+      border: 2px solid var(--dim);
+      padding: 24px 20px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+    }
+
+    .quote-card::before {
+      content: '"';
+      position: absolute;
+      top: -18px; left: 12px;
+      font-size: 48px;
+      color: var(--dim);
+      font-family: serif;
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-size: clamp(7px, 1.8vw, 9px);
+      line-height: 2.4;
+      color: #b3ffcc;
+      text-shadow: 0 0 6px rgba(0,255,65,.3);
+    }
+
+    .quote-author {
+      font-size: 7px;
+      color: var(--green2);
+      text-align: right;
+    }
+    .quote-author::before { content: '─── '; }
+
+    /* loading animation */
+    .loading-bar {
+      display: inline-block;
+      animation: blink .8s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* button */
+    .btn-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--bg);
+      background: var(--green);
+      border: none;
+      padding: 12px 22px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 var(--green3);
+      transition: transform .08s, box-shadow .08s;
+      letter-spacing: 1px;
+    }
+    .btn:hover {
+      background: #33ff66;
+      box-shadow: 4px 4px 0 var(--green2), 0 0 20px rgba(0,255,65,.4);
+    }
+    .btn:active {
+      transform: translate(4px, 4px);
+      box-shadow: none;
+    }
+
+    /* footer */
+    .footer {
+      font-size: 6px;
+      color: var(--dim);
+      text-align: center;
+      letter-spacing: 2px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 2px solid var(--dim);
+    }
+    .cursor {
+      display: inline-block;
+      width: 8px; height: 12px;
+      background: var(--green);
+      animation: blink .8s step-end infinite;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .screen { padding: 24px 16px 20px; }
+    }
+  </style>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <div class="screen stud-bl stud-br">
+
+    <div class="header">
+      <div class="header-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <span class="header-title">TERMINAL v1.0</span>
+      <div class="header-dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot active"></div>
+      </div>
+    </div>
+
+    <div class="logo">
+      <div class="logo-text">OCTALPRIME</div>
+      <div class="logo-sub">[ WISDOM MODULE ACTIVE ]</div>
+    </div>
+
+    <div class="divider">▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄</div>
+
+    <div class="quote-card">
+      <p class="quote-text" id="quote"><span class="loading-bar">█</span> FETCHING QUOTE...</p>
+      <p class="quote-author" id="author"></p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="fetchQuote()">&gt; NEW QUOTE _</button>
+    </div>
+
+    <div class="footer">
+      REFRESH FOR A NEW QUOTE<span class="cursor"></span>
+    </div>
+
+  </div>
+
+  <script>
+    const fallback = [
+      { content: "Any sufficiently advanced technology is indistinguishable from magic.", author: "Arthur C. Clarke" },
+      { content: "The best way to predict the future is to invent it.", author: "Alan Kay" },
+      { content: "Programs must be written for people to read, and only incidentally for machines to execute.", author: "Harold Abelson" },
+      { content: "Simplicity is prerequisite for reliability.", author: "Edsger W. Dijkstra" },
+      { content: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+    ];
+
+    async function fetchQuote() {
+      const qEl = document.getElementById('quote');
+      const aEl = document.getElementById('author');
+      qEl.innerHTML = '<span class="loading-bar">█</span> FETCHING...';
+      aEl.textContent = '';
+
+      try {
+        const res = await fetch('https://api.quotable.io/random', { cache: 'no-store' });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        qEl.textContent = `"${data.content}"`;
+        aEl.textContent = data.author;
+      } catch {
+        const q = fallback[Math.floor(Math.random() * fallback.length)];
+        qEl.textContent = `"${q.content}"`;
+        aEl.textContent = q.author;
+      }
+    }
+
+    fetchQuote();
+  </script>
 </body>
 </html>
