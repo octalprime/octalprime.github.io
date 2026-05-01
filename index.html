@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OctalPrime</title>
+  <title>OctalPrime — Weird Wisdom</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,12 +28,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 32px;
-      overflow: hidden;
+      padding: 24px 0;
+      overflow-x: hidden;
       image-rendering: pixelated;
     }
 
-    /* pixel grid */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -41,209 +40,157 @@
         linear-gradient(rgba(248,192,0,.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(88,184,24,.04) 1px, transparent 1px);
       background-size: 16px 16px;
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    /* scanlines */
     body::after {
       content: '';
       position: fixed; inset: 0;
       background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 3px,
-        rgba(0,0,0,.18) 3px,
-        rgba(0,0,0,.18) 4px
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,.18) 3px, rgba(0,0,0,.18) 4px
       );
-      pointer-events: none;
-      z-index: 200;
+      pointer-events: none; z-index: 200;
     }
 
     .screen {
-      position: relative;
-      z-index: 1;
-      width: min(680px, 92vw);
+      position: relative; z-index: 1;
+      width: min(700px, 92vw);
       background: var(--surface);
       border: 4px solid var(--gold);
-      /* pixel shadow */
       box-shadow:
-        8px  8px 0 var(--gold3),
+        8px 8px 0 var(--gold3),
         0 0 40px rgba(248,192,0,.15),
         inset 0 0 60px rgba(248,192,0,.04);
-      padding: 36px 32px 32px;
+      padding: 32px 28px 28px;
     }
 
-    /* pixel corner studs */
-    .screen::before,
-    .screen::after,
-    .stud-bl::before,
-    .stud-br::before {
-      content: '';
-      position: absolute;
-      width: 10px; height: 10px;
-      background: var(--gold);
+    .screen::before, .screen::after,
+    .stud-bl::before, .stud-br::before {
+      content: ''; position: absolute;
+      width: 10px; height: 10px; background: var(--gold);
     }
-    .screen::before  { top: -4px;  left: -4px; }
-    .screen::after   { top: -4px;  right: -4px; }
+    .screen::before  { top: -4px;    left: -4px; }
+    .screen::after   { top: -4px;    right: -4px; }
     .stud-bl::before { bottom: -4px; left: -4px; }
     .stud-br::before { bottom: -4px; right: -4px; }
 
-    /* header bar */
+    /* header */
     .header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 24px; padding-bottom: 14px;
       border-bottom: 2px solid var(--dim);
     }
-
-    .header-dots {
-      display: flex; gap: 6px;
-    }
-    .dot {
-      width: 10px; height: 10px;
-      background: var(--gold3);
-      box-shadow: inset -2px -2px 0 rgba(0,0,0,.4);
-    }
+    .header-dots { display: flex; gap: 6px; }
+    .dot { width: 10px; height: 10px; background: var(--gold3); box-shadow: inset -2px -2px 0 rgba(0,0,0,.4); }
     .dot.active { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
-
-    .header-title {
-      flex: 1;
-      text-align: center;
-      font-size: 7px;
-      color: var(--gold3);
-      letter-spacing: 3px;
-    }
+    .header-title { flex: 1; text-align: center; font-size: 7px; color: var(--gold3); letter-spacing: 3px; }
 
     /* logo */
-    .logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
+    .logo { text-align: center; margin-bottom: 24px; }
     .logo-text {
       font-size: clamp(10px, 3vw, 16px);
-      letter-spacing: 6px;
-      color: var(--gold);
+      letter-spacing: 6px; color: var(--gold);
       text-shadow: 0 0 16px var(--gold), 0 0 40px rgba(248,192,0,.4);
       animation: flicker 8s infinite;
     }
-    .logo-sub {
-      font-size: 7px;
-      color: var(--green);
-      letter-spacing: 3px;
-      margin-top: 8px;
-    }
+    .logo-sub { font-size: 7px; color: var(--green); letter-spacing: 3px; margin-top: 8px; }
 
     @keyframes flicker {
       0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
       20%,24%,55% { opacity: .6; }
     }
 
-    /* divider */
-    .divider {
-      font-size: 8px;
-      color: var(--dim);
-      text-align: center;
-      letter-spacing: 2px;
-      margin: 20px 0;
-      overflow: hidden;
-    }
+    .divider { font-size: 8px; color: var(--dim); text-align: center; margin: 18px 0; }
 
-    /* quote card */
-    .quote-card {
-      background: rgba(88,184,24,.04);
+    /* wisdom card */
+    .wisdom-card {
       border: 2px solid var(--dim);
-      padding: 24px 20px;
-      min-height: 140px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 16px;
+      padding: 28px 22px;
+      min-height: 160px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      gap: 20px; text-align: center;
       position: relative;
+      transition: border-color .4s;
+    }
+    .wisdom-card.lit {
+      border-color: var(--gold3);
+      box-shadow: 0 0 24px rgba(248,192,0,.1);
     }
 
-    .quote-card::before {
-      content: '"';
-      position: absolute;
-      top: -18px; left: 12px;
-      font-size: 48px;
-      color: var(--dim);
-      font-family: serif;
-      line-height: 1;
-    }
-
-    .quote-text {
-      font-size: clamp(7px, 1.8vw, 9px);
-      line-height: 2.4;
+    .wisdom-text {
+      font-size: clamp(7px, 1.9vw, 9px);
+      line-height: 2.5;
       color: #f0e8a0;
-      text-shadow: 0 0 6px rgba(248,192,0,.25);
+      text-shadow: 0 0 8px rgba(248,192,0,.2);
+      min-height: 60px;
     }
 
-    .quote-author {
-      font-size: 7px;
-      color: var(--green);
-      text-align: right;
-    }
-    .quote-author::before { content: '─── '; }
-
-    /* loading animation */
-    .loading-bar {
+    /* blinking cursor shown during typewriter */
+    .wisdom-text .caret {
       display: inline-block;
-      animation: blink .8s step-end infinite;
+      width: 8px; height: 1em;
+      background: var(--gold);
+      vertical-align: text-bottom;
+      margin-left: 2px;
+      animation: blink .7s step-end infinite;
     }
+
+    .wisdom-source {
+      font-size: 7px; color: var(--green2);
+      letter-spacing: 1px;
+      opacity: 0;
+      transition: opacity .6s .2s;
+    }
+    .wisdom-source.visible { opacity: 1; }
+    .wisdom-source::before { content: '— '; color: var(--dim); }
+
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* button */
-    .btn-row {
-      margin-top: 24px;
-      display: flex;
-      justify-content: center;
-    }
+    /* buttons */
+    .btn-row { margin-top: 22px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
     .btn {
       font-family: 'Press Start 2P', monospace;
-      font-size: 8px;
-      color: var(--bg);
-      background: var(--gold);
-      border: none;
-      padding: 12px 22px;
-      cursor: pointer;
+      font-size: 8px; color: var(--bg);
+      background: var(--gold); border: none;
+      padding: 13px 22px; cursor: pointer;
       box-shadow: 4px 4px 0 var(--gold3);
       transition: transform .08s, box-shadow .08s;
       letter-spacing: 1px;
     }
-    .btn:hover {
-      background: #ffd840;
-      box-shadow: 4px 4px 0 var(--gold2), 0 0 20px rgba(248,192,0,.4);
+    .btn:hover { background: #ffd840; box-shadow: 4px 4px 0 var(--gold2), 0 0 18px rgba(248,192,0,.35); }
+    .btn:active { transform: translate(4px,4px); box-shadow: none; }
+
+    .btn-copy {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px; color: var(--gold2);
+      background: transparent; border: 2px solid var(--gold3);
+      padding: 10px 16px; cursor: pointer;
+      box-shadow: 2px 2px 0 var(--gold3);
+      transition: transform .08s, box-shadow .08s, color .1s, border-color .1s;
+      letter-spacing: 1px;
     }
-    .btn:active {
-      transform: translate(4px, 4px);
-      box-shadow: none;
-    }
+    .btn-copy:hover { color: var(--gold); border-color: var(--gold); box-shadow: 2px 2px 0 var(--gold2); }
+    .btn-copy:active { transform: translate(2px,2px); box-shadow: none; }
+    .btn-copy.copied { color: var(--green); border-color: var(--green); }
+
+    /* counter */
+    .counter { margin-top: 18px; text-align: center; font-size: 6px; color: var(--dim); letter-spacing: 2px; }
+    .counter span { color: var(--gold3); }
 
     /* footer */
     .footer {
-      font-size: 6px;
-      color: var(--dim);
-      text-align: center;
-      letter-spacing: 2px;
-      margin-top: 24px;
-      padding-top: 16px;
+      font-size: 6px; color: var(--dim);
+      text-align: center; letter-spacing: 2px;
+      margin-top: 20px; padding-top: 16px;
       border-top: 2px solid var(--dim);
     }
-    .cursor {
-      display: inline-block;
-      width: 8px; height: 12px;
-      background: var(--gold);
-      animation: blink .8s step-end infinite;
-      vertical-align: middle;
-      margin-left: 4px;
-    }
+    .cursor { display: inline-block; width: 8px; height: 10px; background: var(--gold); animation: blink .8s step-end infinite; vertical-align: middle; margin-left: 4px; }
 
     @media (max-width: 480px) {
-      .screen { padding: 24px 16px 20px; }
+      .screen { padding: 20px 14px 18px; }
     }
   </style>
 </head>
@@ -252,69 +199,164 @@
 
     <div class="header">
       <div class="header-dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
       </div>
-      <span class="header-title">TERMINAL v1.0</span>
+      <span class="header-title">WEIRD WISDOM v3.0</span>
       <div class="header-dots">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot active"></div>
+        <div class="dot"></div><div class="dot"></div><div class="dot active"></div>
       </div>
     </div>
 
     <div class="logo">
       <div class="logo-text">OCTALPRIME</div>
-      <div class="logo-sub">[ WISDOM MODULE ACTIVE ]</div>
+      <div class="logo-sub">[ WEIRD WISDOM MODULE ]</div>
     </div>
 
     <div class="divider">▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄</div>
 
-    <div class="quote-card">
-      <p class="quote-text" id="quote"><span class="loading-bar">█</span> FETCHING QUOTE...</p>
-      <p class="quote-author" id="author"></p>
+    <div class="wisdom-card" id="card">
+      <p class="wisdom-text" id="wisdom-text"></p>
+      <p class="wisdom-source" id="wisdom-source"></p>
     </div>
 
     <div class="btn-row">
-      <button class="btn" onclick="fetchQuote()">&gt; NEW QUOTE _</button>
+      <button class="btn" id="summon-btn" onclick="summon()">[ &gt; ENLIGHTEN ME ]</button>
+      <button class="btn-copy" id="copy-btn" onclick="copyWisdom()">&gt; COPY</button>
     </div>
 
-    <div class="footer">
-      REFRESH FOR A NEW QUOTE<span class="cursor"></span>
-    </div>
+    <div class="counter">wisdom <span id="count">0</span> of <span id="total">0</span> summoned</div>
+
+    <div class="footer">REFRESH FOR A RANDOM TRANSMISSION<span class="cursor"></span></div>
 
   </div>
 
   <script>
-    const fallback = [
-      { content: "Any sufficiently advanced technology is indistinguishable from magic.", author: "Arthur C. Clarke" },
-      { content: "The best way to predict the future is to invent it.", author: "Alan Kay" },
-      { content: "Programs must be written for people to read, and only incidentally for machines to execute.", author: "Harold Abelson" },
-      { content: "Simplicity is prerequisite for reliability.", author: "Edsger W. Dijkstra" },
-      { content: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+    const WISDOMS = [
+      { text: "A fish doesn't know it's wet. You don't know what you are either, but at least you're suspicious.", source: "overheard near the edge of a map" },
+      { text: "The candle that burns twice as bright burns half as long. The candle that never burns is just wax pretending.", source: "a birthday no one attended" },
+      { text: "You are the average of the five clouds you spend the most time watching.", source: "a weatherman who quit" },
+      { text: "Every map is wrong. Every map is still useful. Remember this when you meet people.", source: "a cartographer's apology" },
+      { text: "The loudest person in the room is negotiating with their own echo.", source: "a wall that listened too long" },
+      { text: "Butterflies remember being caterpillars. You don't remember learning to walk. One of you has better priorities.", source: "a cocoon, emptied" },
+      { text: "Your shadow has followed you everywhere and never complained once. It deserves more credit.", source: "the last sunny afternoon" },
+      { text: "A clock that is wrong twice a day is still right twice a day. This is not as comforting as it sounds.", source: "a watch left on a beach" },
+      { text: "You cannot see the back of your own head without tools. Everything you know about yourself has the same limitation.", source: "a barber with too much time" },
+      { text: "The door that creaks the loudest is always the one you tried to open quietly.", source: "a house with excellent memory" },
+      { text: "The sun doesn't rise. You're the one spinning. Take a moment with that.", source: "an astronomer who stopped sleeping" },
+      { text: "Mirrors only show you backwards. Every self-portrait is a lie you agreed to.", source: "a reflection, unverified" },
+      { text: "The skeleton inside you has never seen sunlight. It still shows up every day.", source: "a bone, philosophically" },
+      { text: "You've survived every bad day so far. Your track record is suspiciously perfect.", source: "a statistician in denial" },
+      { text: "The tree doesn't try to grow. It just doesn't stop.", source: "a forest that outlived the argument" },
+      { text: "Your future self is watching this moment on a very small screen.", source: "a memory not yet made" },
+      { text: "Nothing is on fire until you check. This is true of most problems.", source: "a fire department, retrospectively" },
+      { text: "The fish that swims upstream isn't brave. It's just going home.", source: "a salmon with no interest in metaphors" },
+      { text: "A forgotten dream is still a dream that happened. The universe kept a copy.", source: "the space between 3am and 4am" },
+      { text: "Every expert was once someone who had no idea. Some of them still don't.", source: "a certificate on a wall" },
+      { text: "The word 'soon' is the polite way of saying 'I have not decided yet.'", source: "an unread message" },
+      { text: "A rock that has been sitting in one place for a thousand years is not lazy. It is committed.", source: "geology, defensively" },
+      { text: "The universe is 13.8 billion years old. Your deadline is not as final as they made it sound.", source: "a cosmic auditor" },
+      { text: "You cannot unhear a song or unread a sentence. Choose your inputs like you're building someone you have to live with.", source: "an ear, regretting nothing" },
+      { text: "A compass only tells you where north is. It says nothing about whether north is where you should go.", source: "a lost explorer, eventually fine" },
+      { text: "Sleep erases urgency. This is not a bug.", source: "a pillow with a philosophy degree" },
+      { text: "The advice you ignore is usually the advice that was right. This is by design.", source: "an unsent letter" },
+      { text: "A crowded room is lonely in a different language.", source: "a party, translated poorly" },
+      { text: "You've been mispronouncing something important your entire life and no one has told you yet.", source: "a word, quietly offended" },
+      { text: "The people who look like they have it figured out are better at the pause before they speak.", source: "a silence, studied" },
+      { text: "Gravity is the most reliable relationship you have. It has never once let you float away without warning.", source: "the ground, consistently" },
+      { text: "An idea you didn't write down is a dream you had while awake.", source: "a notebook, accusingly blank" },
+      { text: "Every clock agrees that now is happening. This is the only thing they agree on.", source: "a room full of clocks, briefly" },
+      { text: "You are the only version of yourself that has ever existed. Try to make it strange enough to remember.", source: "a universe with no drafts" },
+      { text: "The thing you're procrastinating on has already started in your head. You're just billing it differently.", source: "a to-do list, watching" },
+      { text: "A locked door is just a door with a different set of instructions.", source: "a key that found another way" },
+      { text: "You are currently in the good old days of something. You will not know which until later.", source: "nostalgia, filing in advance" },
+      { text: "Asking 'why' more than three times leads to either wisdom or exhaustion. Both are useful.", source: "a child who kept going" },
+      { text: "The color of an apple is the last thing a seed decides.", source: "a tree, thinking ahead" },
+      { text: "A stopped clock is the most honest clock. It shows you exactly when it gave up.", source: "a repairman, reconsidering" },
+      { text: "Everything you own owns a piece of your attention back. This is the true price.", source: "a garage sale, metaphysically" },
+      { text: "The only machine that improves by using it is your mind. Everything else just wears down.", source: "a very tired engine" },
+      { text: "You have never been in the same river twice. The river has also never seen the same you.", source: "Heraclitus, still wet" },
+      { text: "Fear is just curiosity that hasn't been introduced to itself yet.", source: "a door slightly ajar" },
+      { text: "The moon doesn't explain why it looks different every night. This is called confidence.", source: "a lunar PR statement" },
+      { text: "The space between words carries more weight than people are comfortable admitting.", source: "a pause, misread as silence" },
+      { text: "Most roads were once someone's shortcut.", source: "a path that became permanent" },
+      { text: "You can be both lost and exactly where you need to be. Maps are not the final authority.", source: "a wrong turn that wasn't" },
+      { text: "Comfort is a river. You either swim in it or you slowly drown in it.", source: "a bathrobe, existentially" },
+      { text: "The word 'obvious' means someone already thought about it longer than you have.", source: "an obvious observation" },
+      { text: "You were taught to count to ten before getting angry. Nobody explained what happens at eleven.", source: "a very patient fist" },
+      { text: "An empty stomach and an empty mind are solved the same way: feed them something true.", source: "a kitchen with good lighting" },
+      { text: "Somewhere, a version of you made a different choice. That version is also wondering about you.", source: "a fork in a road, still forking" },
+      { text: "The best armor is a face that suggests you already know.", source: "a bluff that became a fact" },
+      { text: "Every mountain looks smaller from a distance and larger up close. Decide before you get closer.", source: "a base camp journal" },
+      { text: "The problem with advice is it arrives after the question has already answered itself.", source: "a book opened too late" },
     ];
 
-    async function fetchQuote() {
-      const qEl = document.getElementById('quote');
-      const aEl = document.getElementById('author');
-      qEl.innerHTML = '<span class="loading-bar">█</span> FETCHING...';
-      aEl.textContent = '';
+    let seen = new Set();
+    let currentWisdom = null;
+    let typing = false;
 
-      try {
-        const res = await fetch('https://dummyjson.com/quotes/random', { cache: 'no-store' });
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        qEl.textContent = `"${data.quote}"`;
-        aEl.textContent = data.author;
-      } catch {
-        const q = fallback[Math.floor(Math.random() * fallback.length)];
-        qEl.textContent = `"${q.content}"`;
-        aEl.textContent = q.author;
-      }
+    document.getElementById('total').textContent = WISDOMS.length;
+
+    function pickWisdom() {
+      if (seen.size >= WISDOMS.length) seen.clear();
+      let idx;
+      do { idx = Math.floor(Math.random() * WISDOMS.length); } while (seen.has(idx));
+      seen.add(idx);
+      return WISDOMS[idx];
     }
 
-    fetchQuote();
+    function typewrite(el, text, onDone) {
+      el.innerHTML = '<span class="caret"></span>';
+      let i = 0;
+      typing = true;
+      document.getElementById('summon-btn').disabled = true;
+
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.innerHTML = text.slice(0, ++i) + '<span class="caret"></span>';
+        } else {
+          el.textContent = text;
+          clearInterval(interval);
+          typing = false;
+          document.getElementById('summon-btn').disabled = false;
+          if (onDone) onDone();
+        }
+      }, 28);
+    }
+
+    function summon() {
+      if (typing) return;
+      const w = pickWisdom();
+      currentWisdom = w;
+
+      const card = document.getElementById('card');
+      const textEl = document.getElementById('wisdom-text');
+      const sourceEl = document.getElementById('wisdom-source');
+
+      card.classList.remove('lit');
+      sourceEl.classList.remove('visible');
+      sourceEl.textContent = '';
+
+      document.getElementById('count').textContent = seen.size;
+
+      typewrite(textEl, `"${w.text}"`, () => {
+        sourceEl.textContent = w.source;
+        sourceEl.classList.add('visible');
+        card.classList.add('lit');
+      });
+    }
+
+    function copyWisdom() {
+      if (!currentWisdom) return;
+      const btn = document.getElementById('copy-btn');
+      const text = `"${currentWisdom.text}" — ${currentWisdom.source}\n\noctalprime.github.io`;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '> COPIED!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '> COPY'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    summon();
   </script>
 </body>
 </html>
